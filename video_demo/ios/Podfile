@@ -2,6 +2,7 @@
 # platform :ios, '9.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
+install! 'cocoapods', :deterministic_uuids => false
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
 project 'Runner', {
@@ -64,24 +65,13 @@ target 'Runner' do
   # Keep pod path relative so it can be checked into Podfile.lock.
   pod 'Flutter', :path => 'Flutter'
   
-  pod 'AliyunVideoSDKPro', '3.14.0'
-  pod 'QuCore-ThirdParty', '3.14.0'
-  pod 'AlivcConan', '1.0.2'
-  pod 'VODUpload'
-  pod 'AliyunOSSiOS'
-#  pod 'AlivcCommon', :path => 'AlivcCommon/'
-#  pod 'AlivcCore', :path => 'AlivcCore/'
-#  pod 'AlivcCrop', :path => 'AlivcCrop/'
-#  pod 'AlivcEdit', :path => 'AlivcEdit/'
-#  pod 'AlivcRecord', :path => 'AlivcRecord/'
-#  pod 'AlivcSmartVideo', :path => 'AlivcSmartVideo/'
-#
-#  pod 'VODUpload', :git => 'https://github.com/aliyunvideo/VODUpload.git',:tag => '1.5.3'
-#  pod 'AliPlayerPartSDK_iOS',:git => 'https://github.com/aliyunvideo/AliPlayerSDK.git',:tag => '4.7.3'
-#  pod 'QuCore-ThirdParty',:git => 'https://github.com/aliyunvideo/QuCore-ThirdParty.git',:tag => '3.10.0'
-#  pod 'AliyunVideoSDKPro',:git => 'https://github.com/aliyunvideo/AliyunVideoSDKPro.git',:tag => '3.14.0'
-#  pod 'AlivcConan',:git => 'https://github.com/aliyunvideo/AlivcConanSDK.git',:tag => '1.0.2'
-#  pod 'AliyunRace',:git => 'https://github.com/aliyunvideo/AliyunRace.git',:tag => '1.0.0'
+  pod 'AlivcCommon', :path => 'AlivcCommon/'
+  pod 'AlivcCore', :path => 'AlivcCore/'
+  pod 'AlivcCrop', :path => 'AlivcCrop/'
+  pod 'AlivcEdit', :path => 'AlivcEdit/'
+  pod 'AlivcRecord', :path => 'AlivcRecord/'
+
+#pod 'Nama-lite', '5.9.0'
 
   # Plugin Pods
 

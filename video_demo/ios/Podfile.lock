@@ -1,37 +1,100 @@
 PODS:
+  - AFNetworking (3.2.1):
+    - AFNetworking/NSURLSession (= 3.2.1)
+    - AFNetworking/Reachability (= 3.2.1)
+    - AFNetworking/Security (= 3.2.1)
+    - AFNetworking/Serialization (= 3.2.1)
+    - AFNetworking/UIKit (= 3.2.1)
+  - AFNetworking/NSURLSession (3.2.1):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (3.2.1)
+  - AFNetworking/Security (3.2.1)
+  - AFNetworking/Serialization (3.2.1)
+  - AFNetworking/UIKit (3.2.1):
+    - AFNetworking/NSURLSession
+  - AlivcCommon (0.1.0):
+    - AFNetworking
+    - FMDB
+    - JSONModel
+    - MBProgressHUD
+    - SDWebImage
+    - ZipArchive
   - AlivcConan (1.0.2):
     - AlivcConan/AlivcConan (= 1.0.2)
   - AlivcConan/AlivcConan (1.0.2)
+  - AlivcCore (0.1.0):
+    - AlivcCommon
+    - AlivcConan (= 1.0.2)
+    - AliyunVideoSDKPro (= 3.14.0)
+    - JSONModel
+    - QuCore-ThirdParty (= 3.14.0)
+    - VODUpload
+  - AlivcCrop (0.1.0):
+    - AlivcCore
+  - AlivcEdit (0.1.0):
+    - AlivcCore
+  - AlivcRecord (0.1.0):
+    - AlivcCore
+    - AliyunRace (= 1.0.0)
   - AliyunOSSiOS (2.10.8)
+  - AliyunRace (1.0.0)
   - AliyunVideoSDKPro (3.14.0)
   - Flutter (1.0.0)
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
+  - JSONModel (1.8.0)
+  - MBProgressHUD (1.2.0)
   - QuCore-ThirdParty (3.14.0)
+  - SDWebImage (5.6.1):
+    - SDWebImage/Core (= 5.6.1)
+  - SDWebImage/Core (5.6.1)
   - video_player (0.0.1):
     - Flutter
   - video_player_web (0.0.1):
     - Flutter
   - VODUpload (1.6.0):
     - AliyunOSSiOS
+  - ZipArchive (1.4.0)
 
 DEPENDENCIES:
-  - AlivcConan (= 1.0.2)
-  - AliyunOSSiOS
-  - AliyunVideoSDKPro (= 3.14.0)
+  - AlivcCommon (from `AlivcCommon/`)
+  - AlivcCore (from `AlivcCore/`)
+  - AlivcCrop (from `AlivcCrop/`)
+  - AlivcEdit (from `AlivcEdit/`)
+  - AlivcRecord (from `AlivcRecord/`)
   - Flutter (from `Flutter`)
-  - QuCore-ThirdParty (= 3.14.0)
   - video_player (from `.symlinks/plugins/video_player/ios`)
   - video_player_web (from `.symlinks/plugins/video_player_web/ios`)
-  - VODUpload
 
 SPEC REPOS:
   trunk:
+    - AFNetworking
     - AlivcConan
     - AliyunOSSiOS
+    - AliyunRace
     - AliyunVideoSDKPro
+    - FMDB
+    - JSONModel
+    - MBProgressHUD
     - QuCore-ThirdParty
+    - SDWebImage
     - VODUpload
+    - ZipArchive
 
 EXTERNAL SOURCES:
+  AlivcCommon:
+    :path: AlivcCommon/
+  AlivcCore:
+    :path: AlivcCore/
+  AlivcCrop:
+    :path: AlivcCrop/
+  AlivcEdit:
+    :path: AlivcEdit/
+  AlivcRecord:
+    :path: AlivcRecord/
   Flutter:
     :path: Flutter
   video_player:
@@ -40,15 +103,27 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/video_player_web/ios"
 
 SPEC CHECKSUMS:
+  AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
+  AlivcCommon: 74cdd4331ad59994ba1cc7f961a8361cd6ba0be6
   AlivcConan: df8627643b3794c329e4c8eb894428610be83e88
+  AlivcCore: 05234385ed96a70e8b39a3a77d9c09985b910615
+  AlivcCrop: 146d4248ec3bc8572e898fde3c4d958b07bc7a70
+  AlivcEdit: a9eb549aa4748290fb5e609b4c1531b12a6a2e77
+  AlivcRecord: 1c89345c803a1fbdb4fd57279e62dd34143f2082
   AliyunOSSiOS: 8db92936545593b9e5c66d680ef2ac0738946651
+  AliyunRace: 5ed7cd537ac790ce63c40a7edb76ba31d2da0f65
   AliyunVideoSDKPro: 637151f3242a59ea00ccb94c82c801a87641825c
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  JSONModel: 02ab723958366a3fd27da57ea2af2113658762e9
+  MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   QuCore-ThirdParty: 04b95bda641d0f870247e0e0b46fa6290eefec01
+  SDWebImage: 7edb9c3ea661e77a66661f7f044de8c1b55d1120
   video_player: 69c5f029fac4ffe4fc8a85ea7f7b793709661549
   video_player_web: da8cadb8274ed4f8dbee8d7171b420dedd437ce7
   VODUpload: 187c8b305ddc21661000377989fe9b1dfbc4ac3d
+  ZipArchive: e25a4373192673e3229ac8d6e9f64a3e5713c966
 
-PODFILE CHECKSUM: 8f247c780fabb48f518412704b657fbda79d108d
+PODFILE CHECKSUM: 99d27ab9409a7be6ed7f1c316df98978e7b01d47
 
 COCOAPODS: 1.8.4

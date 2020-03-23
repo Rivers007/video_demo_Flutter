@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:video_demo/cp_base_video_widget.dart';
 import 'package:video_demo/full_video_widget.dart';
 import 'package:video_player/video_player.dart';
 
@@ -25,57 +26,62 @@ class _PlayVideoPageState extends State<PlayVideoPage> {
 
   List<FullVideoWidget> videoPlayerList = [];
 
-  List<FullVideoModel> videoModelList = [
-    FullVideoModel(
+  List<CPBaseVideoModel> videoModelList = [
+    CPBaseVideoModel(
         playing: true,
         url:
             'http://tb-video.bdstatic.com/tieba-smallvideo-transcode/2729238_d5132825516cd4603e0d32286474d958_0.mp4',
         index: 0),
-    FullVideoModel(
+    CPBaseVideoModel(
         playing: false,
         url:
             'http://tb-video.bdstatic.com/tieba-smallvideo-transcode/2254819_a91cbcd3e0b2d3f7e91f841af7521533_0.mp4',
         index: 1),
-    FullVideoModel(
+    CPBaseVideoModel(
         playing: false,
         url:
             'http://tb-video.bdstatic.com/tieba-smallvideo-transcode/2410119_c0266426979b4ffaaa57f8413b40f905_0.mp4',
         index: 2),
-    FullVideoModel(
+    CPBaseVideoModel(
         playing: false,
         url:
             'http://tb-video.bdstatic.com/tieba-smallvideo-transcode/3830561_5acdf9a52e60062c2ccf1244d302a47f_0.mp4',
         index: 3),
-    FullVideoModel(
+    CPBaseVideoModel(
         playing: false,
         url:
             'http://tb-video.bdstatic.com/tieba-smallvideo-transcode/2729238_d5132825516cd4603e0d32286474d958_0.mp4',
         index: 4),
-    FullVideoModel(
+    CPBaseVideoModel(
         playing: false,
         url:
             'http://tb-video.bdstatic.com/tieba-smallvideo-transcode/2254819_a91cbcd3e0b2d3f7e91f841af7521533_0.mp4',
         index: 5),
-    FullVideoModel(
+    CPBaseVideoModel(
         playing: false,
         url:
             'http://tb-video.bdstatic.com/tieba-smallvideo-transcode/2410119_c0266426979b4ffaaa57f8413b40f905_0.mp4',
         index: 6),
-    FullVideoModel(
+    CPBaseVideoModel(
         playing: false,
         url:
             'http://tb-video.bdstatic.com/tieba-smallvideo-transcode/3830561_5acdf9a52e60062c2ccf1244d302a47f_0.mp4',
         index: 7),
-    FullVideoModel(
+    CPBaseVideoModel(
         playing: false,
         url:
             'http://tb-video.bdstatic.com/tieba-smallvideo-transcode/2729238_d5132825516cd4603e0d32286474d958_0.mp4',
         index: 8),
-    FullVideoModel(
+    CPBaseVideoModel(
         playing: false,
         url:
             'http://tb-video.bdstatic.com/tieba-smallvideo-transcode/2254819_a91cbcd3e0b2d3f7e91f841af7521533_0.mp4',
-        index: 9)
+        index: 9),
+    CPBaseVideoModel(
+        playing: false,
+        url:
+            'http://video.pearvideo.com/mp4/adshort/20181120/cont-1479130-13260196_adpkg-ad_hd.mp4',
+        index: 10),
   ];
   //获取屏幕宽度
   @override
@@ -110,7 +116,7 @@ class _PlayVideoPageState extends State<PlayVideoPage> {
                 height: screenHeight,
                 alignment: Alignment.center,
                 // child: Text('$index'),
-                child: FullVideoWidget(
+                child: CPBaseVideoView(
                   model: videoModelList[index],
                 ),
                 // )
@@ -164,14 +170,11 @@ class _PlayVideoPageState extends State<PlayVideoPage> {
               lastPage = videoModelList.length - 1;
             }
             print(lastPage);
-            for (FullVideoModel model in videoModelList) {
+            for (CPBaseVideoModel model in videoModelList) {
               model.playing = false;
             }
             videoModelList[lastPage].playing = true;
             setState(() {});
-            // videoPlayerList[0].deallocVideoController();
-            // videoPlayerList.removeLast();
-            // videoPlayerList.add(FullVideoWidget());
           });
         }
       } else if (touchRangeY < -1 * screenHeight / 8) {
@@ -184,14 +187,11 @@ class _PlayVideoPageState extends State<PlayVideoPage> {
               lastPage = 0;
             }
             print(lastPage);
-            for (FullVideoModel model in videoModelList) {
+            for (CPBaseVideoModel model in videoModelList) {
               model.playing = false;
             }
             videoModelList[lastPage].playing = true;
             setState(() {});
-            // videoPlayerList[0].deallocVideoController();
-            // videoPlayerList.removeLast();
-            // videoPlayerList.add(FullVideoWidget());
           });
         }
       } else {

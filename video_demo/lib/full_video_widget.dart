@@ -10,7 +10,10 @@ class FullVideoModel {
 
 class FullVideoWidget extends StatefulWidget {
   FullVideoModel model;
-  FullVideoWidget({Key key, this.model}) : super(key: key);
+  FullVideoWidget({
+    Key key,
+    this.model,
+  }) : super(key: key);
 
   deallocVideoController() {
     // controller.
@@ -89,6 +92,7 @@ class _FullVideoWidgetState extends State<FullVideoWidget> {
     return GestureDetector(
       child: Container(
         // color: Colors.red,
+        // height: 300,
         child: AspectRatio(
           aspectRatio: this.controller.value.aspectRatio,
           child:

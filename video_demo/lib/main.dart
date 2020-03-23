@@ -1,7 +1,10 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_demo/full_video_widget.dart';
 import 'package:video_demo/play_video_page.dart';
+import 'package:video_demo/small_video_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -10,6 +13,8 @@ class MyApp extends StatelessWidget {
   MethodChannel _methodChannel = MethodChannel('recordVideo');
   @override
   Widget build(BuildContext context) {
+    print(window.physicalSize);
+
     return MaterialApp(
       title: 'Video Demo',
       theme: ThemeData(
@@ -51,11 +56,19 @@ class MyApp extends StatelessWidget {
                   ),
                 );
               } else {
-                return Container(
-                  height: 60,
-                  color: Colors.black26,
-                  alignment: Alignment.center,
-                  child: Text('小窗口视频', style: TextStyle(fontSize: 16)),
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (BuildContext context) {
+                      return SmallVideoPage();
+                    }));
+                  },
+                  child: Container(
+                    height: 60,
+                    color: Colors.black26,
+                    alignment: Alignment.center,
+                    child: Text('小窗口视频', style: TextStyle(fontSize: 16)),
+                  ),
                 );
               }
             }),

@@ -104,6 +104,14 @@ class _FullVideoWidgetState extends State<FullVideoWidget> {
   }
 
   @override
+  void deactivate() {
+    if (this.controller != null) {
+      this.controller.pause();
+    }
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     if (this.controller != null) {
       this.controller.dispose();

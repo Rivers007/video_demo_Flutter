@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         body: ListView.builder(
             padding: EdgeInsets.only(top: 160),
-            itemCount: 2,
+            itemCount: 3,
             itemBuilder: (BuildContext context, int index) {
               if (index == 0) {
                 return GestureDetector(
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                 );
-              } else {
+              } else if (index == 1) {
                 return GestureDetector(
                   onTap: () {
                     _methodChannel.invokeMethod('record');
@@ -50,15 +50,14 @@ class MyApp extends StatelessWidget {
                     child: Text('录制', style: TextStyle(fontSize: 16)),
                   ),
                 );
+              } else {
+                return Container(
+                  height: 60,
+                  color: Colors.black26,
+                  alignment: Alignment.center,
+                  child: Text('小窗口视频', style: TextStyle(fontSize: 16)),
+                );
               }
-              // else {
-              //   return Container(
-              //     height: 60,
-              //     color: Colors.black26,
-              //     alignment: Alignment.center,
-              //     child: Text('小窗口', style: TextStyle(fontSize: 16)),
-              //   );
-              // }
             }),
       ),
     );

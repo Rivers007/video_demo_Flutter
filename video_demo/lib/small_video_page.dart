@@ -15,13 +15,23 @@ class _SmallVideoPageState extends State<SmallVideoPage> {
       // height: 300,
       // width: 414,
       color: Colors.red,
-      child: CPBaseVideoView(
-        model: CPBaseVideoModel(
-            playing: true,
-            url:
-                'http://video.pearvideo.com/mp4/adshort/20181120/cont-1479130-13260196_adpkg-ad_hd.mp4',
-            index: 0),
-        height: 300,
+      child: Column(
+        children: <Widget>[
+          Container(
+            width: 400,
+            height: 100,
+            color: Colors.blue,
+          ),
+          CPBaseVideoView(
+            model: CPBaseVideoModel(
+                playing: true,
+                url:
+                    'http://video.pearvideo.com/mp4/adshort/20181120/cont-1479130-13260196_adpkg-ad_hd.mp4',
+                index: 0),
+            height: 300,
+            toolBarHidden: false,
+          )
+        ],
       ),
     );
   }

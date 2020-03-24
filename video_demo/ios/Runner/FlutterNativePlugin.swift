@@ -18,6 +18,8 @@ class FlutterNativePlugin: NSObject, FlutterPlugin {
     enum flutterMethod: String {
         /// 录制
         case record = "record"
+        case landscapeLeft = "landscapeLeft"
+        case landscapePortrait = "landscapePortrait"
     }
     
     
@@ -27,8 +29,11 @@ class FlutterNativePlugin: NSObject, FlutterPlugin {
         
       
         let recordVideo = FlutterMethodChannel.init(name: "recordVideo", binaryMessenger: registrar.messenger())
+        let landscape = FlutterMethodChannel.init(name: "landscape", binaryMessenger: registrar.messenger())
+
        
         registrar.addMethodCallDelegate(plugin, channel: recordVideo)
+        registrar.addMethodCallDelegate(plugin, channel: landscape)
 
 
         
@@ -44,15 +49,21 @@ class FlutterNativePlugin: NSObject, FlutterPlugin {
         
         //MARK: --录制
         case .record:
-//            UIViewController *recordParam = [[AlivcShortVideoRoute shared] alivcViewControllerWithType:AlivcViewControlRecordParam];
-//            [self.navigationController setNavigationBarHidden:YES];
-//            [self.navigationController pushViewController:recordParam animated:YES];
             let recordParam:UIViewController = AlivcShortVideoRoute.shared().alivcViewController(with: .recordParam);
             let nav:UINavigationController = UINavigationController(rootViewController: recordParam);
             nav.setNavigationBarHidden(true, animated: false);
             nav.modalPresentationStyle = .fullScreen; UIApplication.shared.keyWindow?.rootViewController?.present(nav, animated: true, completion: nil);
             
             break
+            
+        case .landscapeLeft:
+            let delegate:AppDelegate=UIApplication.shared.delegate as! AppDelegate;
+            delegate.allowRotation = 2;
+            break
+        case .landscapePortrait:
+        let delegate:AppDelegate=UIApplication.shared.delegate as! AppDelegate;
+        delegate.allowRotation = -1;
+        break
             
         default:
             result("")

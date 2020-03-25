@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:orientation/orientation.dart';
@@ -41,6 +42,9 @@ class _CPBaseVideoViewState extends State<CPBaseVideoView>
   double _width;
   Widget videoView;
 
+  int currentPosition = 0;
+  int totalDuration = 0;
+
   @override
   void initState() {
     super.initState();
@@ -55,14 +59,13 @@ class _CPBaseVideoViewState extends State<CPBaseVideoView>
     this.controller = VideoPlayerController.network(widget.model.url);
     // 播放状态
     this.controller
-      ..addListener(() {
-        final bool isPlaying = this.controller.value.isPlaying;
-        if (isPlaying != _isPlaying) {
-          setState(() {
-            _isPlaying = isPlaying;
-          });
-        }
-      })
+      // ..addListener(() {
+      //   final bool isPlaying = this.controller.value.isPlaying;
+      //   // if (isPlaying != _isPlaying) {
+      //   //   _isPlaying = isPlaying;
+      //   // }
+      //   // setState(() {});
+      // })
       // 在初始化完成后必须更新界面
       ..initialize().then((_) {
         videoView = VideoView(
@@ -72,8 +75,11 @@ class _CPBaseVideoViewState extends State<CPBaseVideoView>
           controller: this.controller,
           toolBarHidden: widget.toolBarHidden,
           isLandscape: this.isLandscape,
+          currentPosition: this.currentPosition,
+          totalDuration: this.totalDuration,
           fullVideoCallBack: (bool isLandscape) {
             this.isLandscape = isLandscape;
+
             if (this.isLandscape == true) {
               Navigator.push(context, PageRouteBuilder(pageBuilder:
                   (BuildContext context, Animation animation,
@@ -85,6 +91,7 @@ class _CPBaseVideoViewState extends State<CPBaseVideoView>
             } else {
               Navigator.pop(context);
             }
+            // setState(() {});
           },
         );
         setState(() {});
@@ -94,8 +101,8 @@ class _CPBaseVideoViewState extends State<CPBaseVideoView>
           this.controller.pause();
         }
       });
-
-    this.controller.setLooping(true);
+// this.controller.notifyListeners()
+    // this.controller.setLooping(true);
   }
 
   @override
@@ -138,6 +145,8 @@ class VideoView extends StatefulWidget {
   bool toolBarHidden;
   bool isLandscape;
   Function fullVideoCallBack;
+  int currentPosition;
+  int totalDuration;
   VideoView(
       {Key key,
       this.model,
@@ -146,7 +155,9 @@ class VideoView extends StatefulWidget {
       this.controller,
       this.toolBarHidden,
       this.isLandscape,
-      this.fullVideoCallBack})
+      this.fullVideoCallBack,
+      this.currentPosition = 0,
+      this.totalDuration = 0})
       : super(key: key);
 
   @override
@@ -156,13 +167,18 @@ class VideoView extends StatefulWidget {
 class _VideoViewState extends State<VideoView> with TickerProviderStateMixin {
   AnimationController toolBarcontroller;
   Animation<Offset> animation;
-  double sliderValue = 20;
+  double sliderValue = 0;
   // double _height = 0;
   // double _width = 0;
+  String positionStr = '00:00';
+  String totalTimeStr = '00:00';
+  // bool _isLandscape = false;
   MethodChannel _methodChannel = MethodChannel('landscape');
   @override
   void initState() {
     super.initState();
+
+    // this._isLandscape = widget.isLandscape;
     // this._height = double.parse(widget.height.toString());
     // this._width = double.parse(widget.width.toString());
     toolBarcontroller = AnimationController(
@@ -170,6 +186,45 @@ class _VideoViewState extends State<VideoView> with TickerProviderStateMixin {
     animation = Tween(begin: Offset.zero, end: Offset(0, -1))
         .animate(toolBarcontroller);
     hiddenToolBar();
+
+    // widget.controller
+    //   ..addListener(() {
+    //     widget.currentPosition =
+    //         widget.controller.value.position.inMilliseconds;
+    //     widget.totalDuration = widget.controller.value.duration.inMilliseconds;
+    //     // print(
+    //     //     '${widget.controller.value.position.inMilliseconds}---${widget.controller.value.duration.inMicroseconds}');
+    //     if (widget.totalDuration == 0) {
+    //       this.sliderValue = 0;
+    //     } else {
+    //       this.sliderValue = widget.controller.value.position.inMicroseconds /
+    //           widget.controller.value.duration.inMicroseconds *
+    //           100;
+    //     }
+    //     this.sliderValue = this.sliderValue > 100 ? 100 : this.sliderValue;
+    //     timeFormat();
+    //     setState(() {});
+    //   });
+    // timeFormat();
+  }
+
+  // @override
+  // void didUpdateWidget(VideoView oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+  //   timeFormat();
+  //   // setState(() {});
+  //   // widget.isLandscape=
+  // }
+
+  timeFormat() {
+    this.positionStr = DateUtil.formatDateMs(
+      widget.currentPosition,
+      format: 'mm:ss',
+    );
+    this.totalTimeStr = DateUtil.formatDateMs(
+      widget.totalDuration,
+      format: 'mm:ss',
+    );
   }
 
   @override
@@ -224,7 +279,7 @@ class _VideoViewState extends State<VideoView> with TickerProviderStateMixin {
           hiddenToolBar();
         },
         child: PhysicalModel(
-          color: Colors.transparent, //设置背景底色透明
+          color: Colors.transparent, //设置背景底色���明
           borderRadius: BorderRadius.circular(0),
           clipBehavior: Clip.antiAlias, //注意这个属性
           child: Container(
@@ -278,48 +333,42 @@ class _VideoViewState extends State<VideoView> with TickerProviderStateMixin {
                                 alignment: Alignment.center,
                                 // margin: EdgeInsets.only(left: 2, right: 2),
                                 // color: Colors.yellow,
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: Slider(
-                                    value: this.sliderValue,
-                                    max: 100.0,
-                                    min: 0.0,
-                                    activeColor: Colors.blue,
-                                    onChanged: (double val) {
-                                      this.setState(() {
-                                        this.sliderValue = val;
-                                      });
-                                    },
-                                  ),
-                                ),
+                                child: VideoSliderView(
+                                    controller: widget.controller),
                               ),
                             ),
                             GestureDetector(
                               onTap: () {
-                                widget.isLandscape = !widget.isLandscape;
                                 if (widget.isLandscape == true) {
+                                  widget.isLandscape = false;
+                                } else {
+                                  widget.isLandscape = true;
+                                }
+                                setState(() {});
+                                // this._isLandscape = !this._isLandscape;
+                                if (widget.isLandscape == true) {
+                                  print('横屏');
                                   if (Platform.isIOS) {
                                     _methodChannel
                                         .invokeMethod('landscapeLeft');
                                   }
-                                  // else {
                                   OrientationPlugin.forceOrientation(
-                                      DeviceOrientation.landscapeRight);
-                                  // }
+                                      DeviceOrientation.landscapeLeft);
                                 } else {
+                                  print('竖屏');
                                   if (Platform.isIOS) {
                                     _methodChannel
                                         .invokeMethod('landscapePortrait');
                                   }
-                                  // else {
+
                                   OrientationPlugin.forceOrientation(
-                                      DeviceOrientation.portraitUp);
-                                  // }
+                                      DeviceOrientation.portraitDown);
                                 }
-                                setState(() {});
+
                                 if (widget.fullVideoCallBack != null) {
                                   widget.fullVideoCallBack(widget.isLandscape);
                                 }
+                                // setState(() {});
                               },
                               child: Container(
                                 color: Colors.transparent,
@@ -336,6 +385,107 @@ class _VideoViewState extends State<VideoView> with TickerProviderStateMixin {
                     ))
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class VideoSliderView extends StatefulWidget {
+  VideoPlayerController controller;
+  VideoSliderView({Key key, this.controller}) : super(key: key);
+
+  @override
+  _VideoSliderViewState createState() => _VideoSliderViewState();
+}
+
+class _VideoSliderViewState extends State<VideoSliderView> {
+  double sliderValue = 0;
+  int currentPosition;
+  int totalDuration;
+
+  String positionStr = '00:00';
+  String totalTimeStr = '00:00';
+
+  @override
+  void initState() {
+    super.initState();
+
+    // timeFormat();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    widget.controller.removeListener(_videoListener);
+    widget.controller.addListener(_videoListener);
+  }
+
+  void _videoListener() {
+    this.currentPosition = widget.controller.value.position.inMilliseconds;
+    this.totalDuration = widget.controller.value.duration.inMilliseconds;
+    // print(
+    //     '${widget.controller.value.position.inMilliseconds}---${widget.controller.value.duration.inMicroseconds}');
+    if (this.totalDuration == 0) {
+      this.sliderValue = 0;
+    } else {
+      this.sliderValue = widget.controller.value.position.inMicroseconds /
+          widget.controller.value.duration.inMicroseconds *
+          100;
+    }
+    this.sliderValue = this.sliderValue > 100 ? 100 : this.sliderValue;
+    timeFormat();
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  timeFormat() {
+    this.positionStr = DateUtil.formatDateMs(
+      this.currentPosition,
+      format: 'mm:ss',
+    );
+    this.totalTimeStr = DateUtil.formatDateMs(
+      this.totalDuration,
+      format: 'mm:ss',
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Material(
+        color: Colors.transparent,
+        child: GestureDetector(
+          // onTapDown: (e) {
+          //   widget.controller.pause();
+          // },
+          // onTapUp: (e) {
+          //   widget.controller.play();
+          // },
+          child: Slider(
+            value: this.sliderValue,
+            max: 100.0,
+            min: 0.0,
+            inactiveColor: Colors.white24,
+            activeColor: Colors.white,
+            onChangeStart: (double val) {
+              widget.controller.pause();
+            },
+            onChangeEnd: (double val) {
+              this.setState(() {
+                this.sliderValue = val;
+              });
+              widget.controller.seekTo(
+                  Duration(milliseconds: this.totalDuration * val ~/ 100));
+              widget.controller.play();
+            },
+            onChanged: (double val) {
+              setState(() {
+                this.sliderValue = val;
+              });
+            },
           ),
         ),
       ),

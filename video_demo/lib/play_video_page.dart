@@ -118,6 +118,7 @@ class _PlayVideoPageState extends State<PlayVideoPage> {
                 // child: Text('$index'),
                 child: CPBaseVideoView(
                   model: videoModelList[index],
+                  // existToolBar: true,
                 ),
                 // )
               );

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:orientation/orientation.dart';
 import 'package:video_player/video_player.dart';
+import 'package:provider/provider.dart';
 
 class CPBaseVideoModel {
   bool playing;
@@ -24,8 +25,14 @@ class CPBaseVideoView extends StatefulWidget {
   double height;
   double width;
   bool toolBarHidden;
+  bool existToolBar;
   CPBaseVideoView(
-      {Key key, this.model, this.height, this.width, this.toolBarHidden = true})
+      {Key key,
+      this.model,
+      this.height,
+      this.width,
+      this.toolBarHidden = true,
+      this.existToolBar = false})
       : super(key: key);
 
   @override
@@ -74,6 +81,7 @@ class _CPBaseVideoViewState extends State<CPBaseVideoView>
           height: this._height,
           controller: this.controller,
           toolBarHidden: widget.toolBarHidden,
+          existToolBar: widget.existToolBar,
           isLandscape: this.isLandscape,
           currentPosition: this.currentPosition,
           totalDuration: this.totalDuration,
@@ -143,6 +151,7 @@ class VideoView extends StatefulWidget {
   double height;
   VideoPlayerController controller;
   bool toolBarHidden;
+  bool existToolBar;
   bool isLandscape;
   Function fullVideoCallBack;
   int currentPosition;
@@ -154,6 +163,7 @@ class VideoView extends StatefulWidget {
       this.height,
       this.controller,
       this.toolBarHidden,
+      this.existToolBar = false,
       this.isLandscape,
       this.fullVideoCallBack,
       this.currentPosition = 0,
@@ -276,7 +286,9 @@ class _VideoViewState extends State<VideoView> with TickerProviderStateMixin {
     return Positioned(
       child: GestureDetector(
         onTap: () {
-          hiddenToolBar();
+          if (widget.existToolBar == true) {
+            hiddenToolBar();
+          }
         },
         child: PhysicalModel(
           color: Colors.transparent, //设置背景底色���明
@@ -298,90 +310,111 @@ class _VideoViewState extends State<VideoView> with TickerProviderStateMixin {
                     bottom: -60,
                     child: SlideTransition(
                       position: animation,
-                      child: Container(
-                        // width: 100,
-                        height: 60,
-                        color: Colors.black54,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            GestureDetector(
-                              onTap: () {
-                                if (widget.model.playing == true) {
-                                  widget.controller.pause();
-                                  widget.model.playing = false;
-                                } else {
-                                  widget.controller.play();
-                                  widget.model.playing = true;
-                                }
-                              },
-                              child: Container(
-                                color: Colors.transparent,
-                                width: 30,
-                                height: 30,
-                                margin: EdgeInsets.only(
-                                  left: 16,
+                      child: ChangeNotifierProvider(
+                          create: (context) => SliderValue(0.0),
+                          child: Container(
+                            // width: 100,
+                            height: 60,
+                            color: Colors.black54,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                GestureDetector(
+                                  onTap: () {
+                                    if (widget.model.playing == true) {
+                                      widget.controller.pause();
+                                      widget.model.playing = false;
+                                    } else {
+                                      if (widget.controller.value.position
+                                              .inMilliseconds >=
+                                          widget.controller.value.duration
+                                              .inMilliseconds) {
+                                        widget.controller
+                                            .seekTo(Duration(milliseconds: 0));
+                                      }
+                                      widget.controller.play();
+                                      widget.model.playing = true;
+                                    }
+                                  },
+                                  child: Container(
+                                    color: Colors.transparent,
+                                    width: 30,
+                                    height: 30,
+                                    margin: EdgeInsets.only(
+                                      left: 16,
+                                    ),
+                                    child: Consumer<SliderValue>(
+                                        builder: (context, sValue, child) {
+                                      // print(sValue.value);
+                                      if (sValue.value >= 100) {
+                                        widget.model.playing = false;
+                                        // setState(() {});
+                                      }
+                                      return Image.asset(widget.model.playing ==
+                                              true
+                                          ? sValue.value >= 100
+                                              ? 'images/video_toolbar_play.png'
+                                              : 'images/video_toolbar_pause.png'
+                                          : 'images/video_toolbar_play.png');
+                                    }),
+                                  ),
                                 ),
-                                child: Image.asset(widget.model.playing == true
-                                    ? 'images/video_toolbar_pause.png'
-                                    : 'images/video_toolbar_play.png'),
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                height: 60,
-                                alignment: Alignment.center,
-                                // margin: EdgeInsets.only(left: 2, right: 2),
-                                // color: Colors.yellow,
-                                child: VideoSliderView(
-                                    controller: widget.controller),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                if (widget.isLandscape == true) {
-                                  widget.isLandscape = false;
-                                } else {
-                                  widget.isLandscape = true;
-                                }
-                                setState(() {});
-                                // this._isLandscape = !this._isLandscape;
-                                if (widget.isLandscape == true) {
-                                  print('横屏');
-                                  if (Platform.isIOS) {
-                                    _methodChannel
-                                        .invokeMethod('landscapeLeft');
-                                  }
-                                  OrientationPlugin.forceOrientation(
-                                      DeviceOrientation.landscapeLeft);
-                                } else {
-                                  print('竖屏');
-                                  if (Platform.isIOS) {
-                                    _methodChannel
-                                        .invokeMethod('landscapePortrait');
-                                  }
+                                Expanded(
+                                  child: Container(
+                                    height: 60,
+                                    alignment: Alignment.center,
+                                    // margin: EdgeInsets.only(left: 2, right: 2),
+                                    // color: Colors.yellow,
+                                    child: VideoSliderView(
+                                        controller: widget.controller),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (widget.isLandscape == true) {
+                                      widget.isLandscape = false;
+                                    } else {
+                                      widget.isLandscape = true;
+                                    }
+                                    setState(() {});
+                                    // this._isLandscape = !this._isLandscape;
+                                    if (widget.isLandscape == true) {
+                                      print('横屏');
+                                      if (Platform.isIOS) {
+                                        _methodChannel
+                                            .invokeMethod('landscapeLeft');
+                                      }
+                                      OrientationPlugin.forceOrientation(
+                                          DeviceOrientation.landscapeLeft);
+                                    } else {
+                                      print('竖屏');
+                                      if (Platform.isIOS) {
+                                        _methodChannel
+                                            .invokeMethod('landscapePortrait');
+                                      }
 
-                                  OrientationPlugin.forceOrientation(
-                                      DeviceOrientation.portraitDown);
-                                }
+                                      OrientationPlugin.forceOrientation(
+                                          DeviceOrientation.portraitDown);
+                                    }
 
-                                if (widget.fullVideoCallBack != null) {
-                                  widget.fullVideoCallBack(widget.isLandscape);
-                                }
-                                // setState(() {});
-                              },
-                              child: Container(
-                                color: Colors.transparent,
-                                width: 30,
-                                height: 30,
-                                margin: EdgeInsets.only(right: 16),
-                                child: Image.asset(
-                                    'images/video_toolbar_full.png'),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
+                                    if (widget.fullVideoCallBack != null) {
+                                      widget.fullVideoCallBack(
+                                          widget.isLandscape);
+                                    }
+                                    // setState(() {});
+                                  },
+                                  child: Container(
+                                    color: Colors.transparent,
+                                    width: 30,
+                                    height: 30,
+                                    margin: EdgeInsets.only(right: 16),
+                                    child: Image.asset(
+                                        'images/video_toolbar_full.png'),
+                                  ),
+                                )
+                              ],
+                            ),
+                          )),
                     ))
               ],
             ),
@@ -407,6 +440,8 @@ class _VideoSliderViewState extends State<VideoSliderView> {
 
   String positionStr = '00:00';
   String totalTimeStr = '00:00';
+
+  BuildContext sliderContext;
 
   @override
   void initState() {
@@ -434,11 +469,19 @@ class _VideoSliderViewState extends State<VideoSliderView> {
           widget.controller.value.duration.inMicroseconds *
           100;
     }
+
     this.sliderValue = this.sliderValue > 100 ? 100 : this.sliderValue;
+
     timeFormat();
-    if (mounted) {
-      setState(() {});
-    }
+    // if (sliderContext != null) {
+    Provider.of<SliderValue>(context, listen: false).resetValue(
+        currentPosition: this.currentPosition,
+        totalDuration: this.totalDuration);
+    // }
+
+    // if (mounted) {
+    //   setState(() {});
+    // }
   }
 
   timeFormat() {
@@ -454,6 +497,7 @@ class _VideoSliderViewState extends State<VideoSliderView> {
 
   @override
   Widget build(BuildContext context) {
+    sliderContext = context;
     return Container(
       child: Material(
         color: Colors.transparent,
@@ -464,33 +508,71 @@ class _VideoSliderViewState extends State<VideoSliderView> {
           // onTapUp: (e) {
           //   widget.controller.play();
           // },
-          child: Slider(
-            value: this.sliderValue,
-            max: 100.0,
-            min: 0.0,
-            inactiveColor: Colors.white24,
-            activeColor: Colors.white,
-            onChangeStart: (double val) {
-              widget.controller.pause();
-            },
-            onChangeEnd: (double val) {
-              this.setState(() {
-                this.sliderValue = val;
-              });
-              widget.controller.seekTo(
-                  Duration(milliseconds: this.totalDuration * val ~/ 100));
-              widget.controller.play();
-            },
-            onChanged: (double val) {
-              setState(() {
-                this.sliderValue = val;
-              });
-            },
-          ),
+          child: Consumer<SliderValue>(builder: (context, sValue, child) {
+            // print(sValue.value);
+            return Slider(
+              // value: this.sliderValue,
+              value: sValue.value,
+              max: 100.0,
+              min: 0.0,
+              inactiveColor: Colors.white24,
+              activeColor: Colors.white,
+              onChangeStart: (double val) {
+                widget.controller.pause();
+              },
+              onChangeEnd: (double val) {
+                // Provider.of<SliderValue>(context, listen: false)
+                //     .resetValue(changeValue: val);
+                widget.controller.seekTo(
+                    Duration(milliseconds: this.totalDuration * val ~/ 100));
+                widget.controller.play();
+              },
+              onChanged: (double val) {
+                Provider.of<SliderValue>(context, listen: false)
+                    .resetValue(changeValue: val);
+                // setState(() {
+                //   this.sliderValue = val;
+                // });
+              },
+            );
+          }),
         ),
       ),
     );
+    //   }),
+    // );
   }
+}
+
+class SliderValue with ChangeNotifier {
+  //1
+  double _value = 0.0;
+  SliderValue(this._value);
+
+  int _currentPosition = 0;
+  int _totalDuration = 0;
+
+  void resetValue(
+      {int currentPosition, int totalDuration, double changeValue}) {
+    if (changeValue != null) {
+      _value = changeValue;
+      _currentPosition = (changeValue / 100 * _totalDuration).toInt();
+    } else {
+      _value = currentPosition / totalDuration * 100;
+      _currentPosition = currentPosition;
+      _totalDuration = totalDuration;
+    }
+    _value = _value > 100 ? 100 : _value;
+    notifyListeners();
+  }
+
+  test() {
+    notifyListeners();
+  }
+
+  get value => _value;
+  get currentPosition => _currentPosition;
+  get totalDuration => _totalDuration;
 }
 
 class LandscapeVideoView extends StatefulWidget {

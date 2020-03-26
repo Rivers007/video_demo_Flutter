@@ -30,6 +30,7 @@ class _SmallVideoPageState extends State<SmallVideoPage> {
                 index: 0),
             height: 300,
             toolBarHidden: false,
+            existToolBar: true,
           )
         ],
       ),

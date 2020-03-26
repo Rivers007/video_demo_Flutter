@@ -110,7 +110,7 @@ class _CPBaseVideoViewState extends State<CPBaseVideoView>
         }
       });
 // this.controller.notifyListeners()
-    // this.controller.setLooping(true);
+    this.controller.setLooping(true);
   }
 
   @override

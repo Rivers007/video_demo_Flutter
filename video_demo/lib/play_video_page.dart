@@ -1,6 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:video_demo/cp_base_video_widget.dart';
 import 'package:video_demo/full_video_widget.dart';
+import 'package:video_demo/tiktok_video_gesture.dart';
 import 'package:video_player/video_player.dart';
 
 class PlayVideoPage extends StatefulWidget {
@@ -116,9 +119,72 @@ class _PlayVideoPageState extends State<PlayVideoPage> {
                 height: screenHeight,
                 alignment: Alignment.center,
                 // child: Text('$index'),
-                child: CPBaseVideoView(
-                  model: videoModelList[index],
-                  // existToolBar: true,
+                child: Stack(
+                  children: <Widget>[
+                    Positioned(
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: CPBaseVideoView(
+                          model: videoModelList[index],
+                          // existToolBar: true,
+                        )),
+                    Positioned(
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: TikTokVideoGesture(
+                          child: Container(
+                            color: Colors.transparent,
+                            padding: EdgeInsets.only(left: 16, right: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Container(
+                                  padding:
+                                      EdgeInsets.only(bottom: 100, right: 60),
+                                  // color: Colors.yellow,
+                                  width: window.physicalSize.width /
+                                          window.devicePixelRatio -
+                                      32 -
+                                      40,
+                                  child: Container(
+                                    alignment: Alignment.bottomLeft,
+                                    child: Text(
+                                      '#潘石屹：今年会有更多钱流入房 地产肌肤丰富,今年会有更多钱流入房 地产肌肤丰富',
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: 40,
+                                  padding: EdgeInsets.only(bottom: 100),
+                                  color: Colors.transparent,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      // smallItemiew(),
+                                      smallItemiew(
+                                          icon:
+                                              'images/icon_collection_normal.png',
+                                          desc: '1000'),
+                                      smallItemiew(
+                                          icon: 'images/icon_comments.png',
+                                          desc: '8000'),
+                                      smallItemiew(
+                                          icon: 'images/icon_share.png',
+                                          desc: '3000')
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ))
+                  ],
                 ),
                 // )
               );
@@ -127,8 +193,35 @@ class _PlayVideoPageState extends State<PlayVideoPage> {
     );
   }
 
+  smallItemiew({String icon = '', String desc = ''}) {
+    return Container(
+      margin: EdgeInsets.only(top: 23),
+      height: 50,
+      width: 40,
+      color: Colors.transparent,
+      child: Column(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(bottom: 2),
+            width: 32,
+            height: 32,
+            child: Image.asset(
+              icon,
+              width: 32,
+              height: 32,
+            ),
+          ),
+          Text(
+            desc,
+            style: TextStyle(color: Color(0xFFEEEEEE), fontSize: 12),
+          )
+        ],
+      ),
+    );
+  }
+
   /*
- * 构造纵向滑动时候的触摸抬起监听
+ * ��造纵向滑动时候的触摸抬起监听
  */
   PointerUpEventListener getPonitUpListenerInHorizontal() {
     return (event) {
@@ -147,7 +240,7 @@ class _PlayVideoPageState extends State<PlayVideoPage> {
         return;
       }
       //纵向操作大于横向操作三倍视为纵向操作
-      //这个判断拦截只有在纵向操作距离大于20.0的时候才生效
+      //这个判断拦截只有在纵向操作距离大���20.0的时候才生效
       if (touchRangeY.abs() < touchRangeX.abs() && touchRangeX > 20) {
         nextOffset = screenHeight * lastPage;
         scrollAnimToOffset(_scrollController, nextOffset, () {
@@ -159,7 +252,7 @@ class _PlayVideoPageState extends State<PlayVideoPage> {
         return;
       }
 
-      //如果滑动小于当前屏幕1/8，那么就回弹复原，超过则移动到下一页
+      //如果滑动小于当前屏幕1/8，那么就回弹复���，超过则移动到下一页
       //跳转到下一页或者上一页或者不动
       if (touchRangeY > screenHeight / 8) {
         nextOffset = screenHeight * (lastPage + 1);
@@ -202,7 +295,7 @@ class _PlayVideoPageState extends State<PlayVideoPage> {
   }
 
   /**
- * 滑动到指定位置
+ * 滑动到指��位置
  */
   void scrollAnimToOffset(ScrollController controller, double offset,
       void Function() onScrollCompleted) {
